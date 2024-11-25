@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class User(db.Model):
-    pass
+    # Testing to see this works
 
 class Note(db.Model):
     __tablename__ = "notes"
