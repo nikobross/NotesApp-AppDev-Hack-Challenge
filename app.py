@@ -1,7 +1,6 @@
 from db import db
 from flask import Flask, request
 import json
-from db import Courses, Users, Assignment
 
 app = Flask(__name__)
 db_filename = "cms.db"
@@ -20,6 +19,17 @@ def success_response(data, code=200):
 
 def failure_response(message, code=404):
     return json.dumps({"error": message}), code
+
+
+# User routes
+
+
+
+# Notes routes
+
+
+
+
 
 
 
