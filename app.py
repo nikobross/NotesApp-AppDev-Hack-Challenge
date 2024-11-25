@@ -3,7 +3,7 @@ from flask import Flask, request
 import json
 
 app = Flask(__name__)
-db_filename = "cms.db"
+db_filename = "notes.db"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///%s" % db_filename
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -27,9 +27,30 @@ def failure_response(message, code=404):
 
 # Notes routes
 
+# get all notes
+@app.route("/api/notes/", methods=["GET"])
+def get_all_notes():
+    pass
 
+# get specific note
+@app.route("/api/notes/<int:note_id>/", methods=["GET"])
+def get_note(note_id):
+    pass
 
+# create note
+@app.route("/api/notes/", methods=["POST"])
+def create_note():
+    pass
 
+# update note
+@app.route("/api/notes/<int:note_id>/", methods=["POST"])
+def update_note(note_id):
+    pass
+
+# delete note
+@app.route("/api/notes/<int:note_id>/", methods=["DELETE"])
+def delete_note(note_id):
+    pass
 
 
 
