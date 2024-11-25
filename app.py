@@ -21,11 +21,11 @@ def failure_response(message, code=404):
     return json.dumps({"error": message}), code
 
 
-# User routes
+# ----------- User routes -------------
 
 
 
-# Notes routes
+# ----------- Notes routes ------------
 
 # get all notes
 @app.route("/api/notes/", methods=["GET"])
@@ -52,6 +52,10 @@ def update_note(note_id):
 def delete_note(note_id):
     pass
 
+# get all notes for a user
+@app.route("/api/user/<int:user_id>/notes/", methods=["GET"])
+def get_all_notes_for_user(user_id):
+    pass
 
 
 if __name__ == "__main__":
