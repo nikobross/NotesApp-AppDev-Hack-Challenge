@@ -1,4 +1,4 @@
-from db import db
+from db import db, User, Note
 from flask import Flask, request
 import json
 
@@ -46,37 +46,135 @@ def delete_user(user_id):
     pass
 
 
+
+# ---------- Notes Helpers ------------
+
+def create_note_helper(title, content, user_id):
+    note = Note(title=title, content=content, user_id=user_id)
+
+    db.session.add(note)
+    db.session.commit()
+
+    return note.serialize()
+
+def update_note_helper(note_id, title, content):
+    note = Note.query.filter_by(id=note_id).first()
+
+    if note is None:
+        return failure_response("note not found, check note id")
+    
+    note.title = title
+    note.content = content
+
+    db.session.commit()
+
+    return note.serialize()
+
+def delete_note_helper(note_id):
+    note = Note.query.filter_by(id=note_id).first()
+
+    if note is None:
+        return failure_response("note not found, check note id")
+    
+    res = note.serialize()
+
+    db.session.delete(note)
+    db.session.commit()
+
+    return success_response(res)
+
 # ----------- Notes routes ------------
 
 # get all notes
 @app.route("/api/notes/", methods=["GET"])
 def get_all_notes():
-    pass
+    notes = Note.query.all()
+
+    res = {"notes": [note.serialize() for note in notes]}
+
+    return success_response(res)
+
 
 # get specific note
 @app.route("/api/notes/<int:note_id>/", methods=["GET"])
 def get_note(note_id):
-    pass
+    note = Note.query.filter_by(id=note_id).first()
 
-# create note
+    if note is None:
+        return failure_response("note not found, check id")
+    
+    res = note.serialize()
+    
+    return success_response(res)
+
+
+# create note, take in title, content, and user_id
+# should we allow empty notes? I am right now
 @app.route("/api/notes/", methods=["POST"])
 def create_note():
-    pass
+    
+    body = json.loads(request.data)
 
-# update note
-@app.route("/api/notes/<int:note_id>/", methods=["POST"])
+    title = body.get("title")
+    content = body.get("content")
+    user_id = body.get("user_id")
+
+    if user_id is None:
+        return failure_response("user_id is required")
+    
+    user = User.query.filter_by(id=user_id).first()
+
+    if user is None:
+        return failure_response("user not found, check user_id")
+    
+    res = create_note_helper(title, content, user_id)
+
+    return success_response(res, 201)
+    
+
+# update note, take in title and content 
+# (these will be updated no matter what so we need to pass in both even if only one has been changed)
+# this can easily be changed if that makes it easier
+@app.route("/api/update-note/<int:note_id>/", methods=["POST"])
 def update_note(note_id):
-    pass
+
+    body = json.loads(request.data)
+
+    title = body.get("title")
+    content = body.get("content")
+    
+    note = Note.query.filter_by(id=note_id).first()
+
+    if note is None:
+        return failure_response("note not found, check note id")
+    
+    res = update_note_helper(note_id, title, content)
+
+    return success_response(res)
+
 
 # delete note
 @app.route("/api/notes/<int:note_id>/", methods=["DELETE"])
 def delete_note(note_id):
-    pass
+    
+    res = delete_note_helper(note_id)
+
+    return res
 
 # get all notes for a user
 @app.route("/api/user/<int:user_id>/notes/", methods=["GET"])
 def get_all_notes_for_user(user_id):
-    pass
+    
+    user = User.query.filter_by(id=user_id).first()
+
+    if user is None:
+        return failure_response("user not found, check user_id")
+    
+    notes = Note.query.filter_by(user_id=user_id).all()
+
+    res = {"notes": [note.serialize() for note in notes]}
+
+    return success_response(res)
 
 
 if __name__ == "__main__":
