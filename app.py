@@ -28,22 +28,44 @@ def failure_response(message, code=404):
 
 @app.route("/api/users", methods=["GET"])
 def get_all_users():
-    pass
+    users = User.query.all()
+    res = {"users": [note.serialize() for note in users]}
+    return success_response(res)
 
 
 @app.route("/api/users/", methods=["POST"])
 def create_user():
-    pass
+    body = json.loads(request.data)
+
+    username = body.get("username")
+    password = body.get("password")
+
+    if username is None or password is None:
+        return failure_response("Correctly fill in 'username' and 'password' fields", 400)
+    
+    user = User(username=username, password=password)
+
+    db.session.add(user)
+    db.session.commit()
+
+    res = user.serialize()
+
+    return success_response(res, 201)
 
 
 @app.route("/api/users/<int:user_id>/")
 def get_specific_user(user_id):
-    pass
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return failure_response("user not found, check id")
+    res = user.serialize()
+    return success_response(res)
 
 
 @app.route("/api/users/<int:user_id>/", methods=["DELETE"])
 def delete_user(user_id):
-    pass
+    res = delete_note_helper(user_id)
+    return res
 
 
 
