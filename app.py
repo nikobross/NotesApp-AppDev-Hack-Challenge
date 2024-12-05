@@ -1,6 +1,7 @@
 from db import db, User, Note
 from flask import Flask, request
 import json
+import datetime
 
 app = Flask(__name__)
 db_filename = "notes.db"
@@ -26,7 +27,7 @@ def failure_response(message, code=404):
 # ----------- User routes -------------
 
 
-@app.route("/api/users", methods=["GET"])
+@app.route("/api/users/", methods=["GET"])
 def get_all_users():
     users = User.query.all()
     res = {"users": [note.serialize() for note in users]}
@@ -71,8 +72,8 @@ def delete_user(user_id):
 
 # ---------- Notes Helpers ------------
 
-def create_note_helper(title, content, user_id):
-    note = Note(title=title, content=content, user_id=user_id)
+def create_note_helper(title, content, date, user_id):
+    note = Note(title=title, content=content, date=date, user_id=user_id)
 
     db.session.add(note)
     db.session.commit()
@@ -148,8 +149,11 @@ def create_note():
 
     if user is None:
         return failure_response("user not found, check user_id")
+
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     
-    res = create_note_helper(title, content, user_id)
+    res = create_note_helper(title, content, date, user_id)
 
     return success_response(res, 201)
     
@@ -184,7 +188,7 @@ def delete_note(note_id):
     return res
 
 # get all notes for a user
-@app.route("/api/user/<int:user_id>/notes/", methods=["GET"])
+@app.route("/api/users/<int:user_id>/notes/", methods=["GET"])
 def get_all_notes_for_user(user_id):
     
     user = User.query.filter_by(id=user_id).first()
