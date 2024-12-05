@@ -7,7 +7,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
-    notes = db.relationship('Note', backref='user', lazy=True)
+    notes = db.relationship('Note', backref='user', lazy=True, cascade="all, delete-orphan")
 
     def serialize(self):
         return {

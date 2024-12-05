@@ -89,7 +89,7 @@ def create_note_helper(title, content, date, user_id):
 
     return note.serialize()
 
-def update_note_helper(note_id, title, content):
+def update_note_helper(note_id, title, date, content):
     note = Note.query.filter_by(id=note_id).first()
 
     if note is None:
@@ -97,6 +97,7 @@ def update_note_helper(note_id, title, content):
     
     note.title = title
     note.content = content
+    note.date = date
 
     db.session.commit()
 
@@ -170,7 +171,7 @@ def create_note():
 # update note, take in title and content 
 # (these will be updated no matter what so we need to pass in both even if only one has been changed)
 # this can easily be changed if that makes it easier
-@app.route("/api/update-note/<int:note_id>/", methods=["POST"])
+@app.route("/api/notes/update/<int:note_id>/", methods=["POST"])
 def update_note(note_id):
 
     body = json.loads(request.data)
@@ -183,7 +184,9 @@ def update_note(note_id):
     if note is None:
         return failure_response("note not found, check note id")
     
-    res = update_note_helper(note_id, title, content)
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    res = update_note_helper(note_id, title, date, content)
 
     return success_response(res)
 
