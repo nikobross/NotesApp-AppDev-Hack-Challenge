@@ -65,8 +65,17 @@ def get_specific_user(user_id):
 
 @app.route("/api/users/<int:user_id>/", methods=["DELETE"])
 def delete_user(user_id):
-    res = delete_note_helper(user_id)
-    return res
+    user = User.query.filter_by(id=user_id).first()
+
+    if user is None:
+        return failure_response("user not found, check user id")
+    
+    res = user.serialize()
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return success_response(res)
 
 
 
