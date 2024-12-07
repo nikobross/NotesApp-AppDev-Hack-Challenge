@@ -1,6 +1,7 @@
 # Simple Notes - AppDev Hack Challenge
 #### The one-place-stop to share notes with others
-Our app is an intuitive note-taking platform that allows users to create, edit, and organize their personal notes effortlessly. 
+Our app is an intuitive note-taking platform that allows users to create, edit, and organize their personal notes effortlessly.
+
 <img src="https://github.com/user-attachments/assets/0343f3ef-8b65-40ea-a5b1-af843be52d6d" alt="Home Screen" width="200" />
 <img src="https://github.com/user-attachments/assets/77319896-6478-4298-99d2-8fefd341ea68" alt="Users Screen" width="200" />
 <img src="https://github.com/user-attachments/assets/17e80052-18c1-4bdd-b329-fc6d81ef6cc7" alt="User's Notes Screen" width="200" />
