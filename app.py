@@ -30,7 +30,7 @@ def failure_response(message, code=404):
 @app.route("/api/users/", methods=["GET"])
 def get_all_users():
     users = User.query.all()
-    res = {"users": [note.serialize() for note in users]}
+    res = [note.serialize() for note in users]
     return success_response(res)
 
 
@@ -123,8 +123,8 @@ def delete_note_helper(note_id):
 def get_all_notes():
     notes = Note.query.all()
 
-    res = {"notes": [note.serialize() for note in notes]}
-
+    res = [note.serialize() for note in notes]
+    
     return success_response(res)
 
 
@@ -210,7 +210,7 @@ def get_all_notes_for_user(user_id):
     
     notes = Note.query.filter_by(user_id=user_id).all()
 
-    res = {"notes": [note.serialize() for note in notes]}
+    res = [note.serialize() for note in notes]
 
     return success_response(res)
 
